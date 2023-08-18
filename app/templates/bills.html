@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+{% if current_user.is_anonymous == False and current_user.role_id == 1 %}
+<div class="container">
+  <h1> Новый счет </h1>
+  <form action="" method="post" enctype="multipart/form-data" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ form.select_appointments.label }}<br>
+      {{ form.select_appointments(class_="form-control") }}<br>
+    </div>
+    <div class="form-group">
+      <p>{{ form.submit(class="btn btn-success") }}</p>
+    </div>
+  </form>
+
+  <h1>{{ title }}</h1>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Счет создал</th>
+      <th scope="col">Данные о записи</th>
+      <th scope="col">К оплате</th>
+      <th scope="col">Дата создания счета</th>
+    </tr>
+  </thead>
+    <tbody>
+    {% for i in bills%}
+    <tr>
+      {% for k in users %}
+      {% if k.user_id == i.creator_id %}
+      <td>
+        {{ k.surname }} {{ k.user_name }} {{ k.middle_name }}
+      </td>
+      {% endif %}
+      {% endfor %}
+
+      {% for a in appointments %}
+      {% if a.appointment_id == i.appointment_id %}
+      <td>
+        {{a.appointment_date}} -
+        {% for j in services %}
+          {% if j.service_id == a.service_id %}
+            {{j.service_text}} -
+        {% endif %}
+        {% endfor %}
+        {% for u in users %}
+        {% if u.user_id == a.patient_id %}
+        {{ u.surname }} {{ u.user_name }} {{ u.middle_name }}
+        {% endif %}
+        {% endfor %}
+      </td>
+      {% endif %}
+      {% endfor %}
+
+      {% for s in services %}
+      {% for a in appointments %}
+      {% if a.appointment_id == i.appointment_id and s.service_id == a.service_id %}
+      <td>
+        {{ s.price }}
+      </td>
+      {% endif %}
+      {% endfor %}
+      {% endfor %}
+
+      <td>
+        {{i.bill_date}}
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="container">
+    Страница доступна только для зарегистрированных пользователей. <br>
+    Необходимо зарегистрироваться или войти.
+    <meta http-equiv="refresh" content="3;URL=/login" />
+</div>
+{% endif %}
+{% endblock %}

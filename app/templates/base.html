@@ -1,0 +1,75 @@
+{% extends 'bootstrap/base.html' %}
+{% block title %}
+    {{title}}
+{% endblock %}
+{% block navbar %}
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('index') }}">Стоматология</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index')}}">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('service')}}">Услуги</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('contacts')}}">Контакты</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_anonymous %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('login')}}">Войти</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('register')}}">Регистрация</a>
+                </li>
+                {% else %}
+                {% if current_user.role_id == 2 %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('new_appointment')}}">Новая запись</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('appointment')}}">Мои посещения</a>
+                </li>
+                {% elif current_user.role_id == 1 %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('new_appointment')}}">Новая запись</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('appointment')}}">Записи на прием</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('bills')}}">Счета</a>
+                </li>
+                {% elif current_user.role_id >= 3 %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('medical_history')}}">Медицинская история</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('cost_accounting')}}">Учет расходов</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('orders')}}">Счета</a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout')}}">Выход</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}

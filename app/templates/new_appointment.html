@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+{% if current_user.is_anonymous == False and current_user.role_id <= 2 %}
+<div class="container">
+    <h1>Новая запись</h1>
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.select_service.label }}<br>
+            {{ form.select_service(class_="form-control") }}<br>
+        </div>
+        <div class="form-group">
+            {{ form.select_doctors.label }}<br>
+            {{ form.select_doctors(class_="form-control") }}<br>
+        </div>
+        {% if current_user.role_id == 1%}
+        <div class="form-group">
+            {{ form.select_patient.label }}<br>
+            {{ form.select_patient(class_="form-control") }}<br>
+        </div>
+        {% endif %}
+        <div class="form-group">
+            {{ form.appointment_date.label }}<br>
+            {{ form.appointment_date(class_="form-control") }}<br>
+            {% for error in form.appointment_date.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.select_time.label }}<br>
+            {{ form.select_time(class_="form-control") }}<br>
+            {% for error in form.select_time.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="form-group">
+        <span style="color: red;" >
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </span>
+        </div>
+  {% endif %}
+{% endwith %}
+        <div class="form-group">
+            <p>{{ form.submit(class="btn btn-success") }}</p>
+        </div>
+    </form>
+</div>
+<script>
+    var currentTime = new Date().toISOString().slice(0, 10);
+    let select_service = document.getElementById('select_service');
+    let select_doctors = document.getElementById('select_doctors');
+    let dateField = document.getElementById('appointment_date');
+    let select_time = document.getElementById('select_time');
+    // Меняем время
+    function change_time(){
+        appointment_date = dateField.value;
+        doc_id = select_doctors.value;
+        fetch('/time/' + doc_id +'/'+ appointment_date).then(function(response){
+            response.json().then(function(data) {
+                let optionHTML1 = '';
+                for(let hour of data.times) {
+                    optionHTML1 += '<option value="' + hour.id + '">' + hour.value + ':00</option>';
+                }
+                select_time.innerHTML = optionHTML1;
+            });
+        });
+    }
+    //При изменении услуги ищем докторов
+    select_service.onchange = function(){
+        service = select_service.value;
+        fetch('/doctors/' + service).then(function(response) {
+            response.json().then(function(data) {
+                let optionHTML = '';
+                for (let doctor of data.doctors) {
+                    optionHTML += '<option value="' + doctor.id + '">' + doctor.name + '</option>';
+                }
+                select_doctors.innerHTML = optionHTML;
+                //обновляем время
+                change_time();
+            });
+        });
+
+    }
+    //При изменении даты ищем время
+    dateField.onchange = function(){
+        appointment_date = dateField.value;
+        doc_id = select_doctors.value;
+        fetch('/time/' + doc_id +'/'+ appointment_date).then(function(response){
+            response.json().then(function(data) {
+                let optionHTML1 = '';
+                for (let i = 0; i < data.times.length - 1; i++) {
+                    const hour = data.times[i];
+                    optionHTML1 += '<option value="' + hour.id + '">' + hour.value + ':00</option>';
+                }
+                select_time.innerHTML = optionHTML1;
+            });
+        });
+    }
+    // При изменении докторов обновляем время
+    select_doctors.onchange = function(){
+        appointment_date = dateField.value;
+        doc_id = select_doctors.value;
+        fetch('/time/' + doc_id +'/'+ appointment_date).then(function(response){
+            response.json().then(function(data) {
+                let optionHTML1 = '';
+                for (let i = 0; i < data.times.length - 1; i++) {
+                    const hour = data.times[i];
+                    optionHTML1 += '<option value="' + hour.id + '">' + hour.value + ':00</option>';
+                }
+                select_time.innerHTML = optionHTML1;
+            });
+        });
+    }
+</script>
+{% else %}
+<div class="container">
+    Недостаточно прав/Страница доступна только для зарегистрированных пользователей. <br>
+    Необходимо зарегистрироваться или войти.
+    <meta http-equiv="refresh" content="3;URL=login" />
+</div>
+{% endif %}
+{% endblock %}

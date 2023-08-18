@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.is_anonymous == False and current_user.role_id >= 3 %}
+<div class="container">
+    <h1>{{title}}</h1>
+    <form action="" method="post"  novalidate>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <div class="col-auto my-1">
+                {{ form.select_material.label }}<br>
+                {{ form.select_material(class_="form-control") }}<br>
+            </div>
+        </div>
+        <div class="form-group">
+            {{form.amount.label}} <br>
+            {{form.amount(class_="form-control", placeholder="1", size=32, min="1")}} <br>
+            {% for error in form.amount.errors %}
+            <span style="color: red;">0 < количество <= максимальное значение в таблице</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <p>{{ form.submit(class="btn btn-success") }}</p>
+        </div>
+    </form>
+
+    <h1>Имеющиеся материалы</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID Материала</th>
+            <th scope="col">Наименование</th>
+            <th scope="col">Количество</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in materials %}
+        <tr>
+            <td>
+                {{ i.material_id }}
+            </td>
+            <td>
+                {{ i.material_text }}
+            </td>
+            <td>
+                {{ i.amount }}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="container">
+    Страница доступна только для зарегистрированных пользователей. <br>
+    Необходимо зарегистрироваться или войти.
+    <meta http-equiv="refresh" content="3;URL=/login" />
+</div>
+{% endif %}
+{% endblock %}

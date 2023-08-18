@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+{% if current_user.is_anonymous == False and current_user.role_id >= 3 %}
+<div class="container">
+  <h1>Новая запись</h1>
+  <form action="" method="post" enctype="multipart/form-data" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ form.select_patient.label }}<br>
+      {{ form.select_patient(class_="form-control") }}<br>
+    </div>
+    <div class="form-group">
+      {{ form.history_text.label }}<br>
+      {{ form.history_text(class_="form-control") }}<br>
+    </div>
+    <div class="form-group">
+      <div class="mb-3">
+      {{ form.link_to_xray.label( class_="form-label") }}<br>
+      {{ form.link_to_xray(class_="form-control", type="file", id="formFile") }}<br>
+      </div>
+    </div>
+    <div class="form-group">
+      <p>{{ form.submit(class="btn btn-success") }}</p>
+    </div>
+  </form>
+  <h1>{{ title }}</h1>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Лечащий врач</th>
+      <th scope="col">Пациент</th>
+      <th scope="col">Дата создания</th>
+      <th scope="col">Диагноз/запись</th>
+      <th scope="col">Рентген/фото</th>
+    </tr>
+  </thead>
+    <tbody>
+    {% for i in mh%}
+    <tr>
+      {% for u in users %}
+      {% if u.user_id == i.doc_id %}
+      <td>
+        {{ u.surname }} {{ u.user_name }} {{ u.middle_name }}
+      </td>
+      {% endif %}
+      {% endfor %}
+
+      {% for u in users %}
+      {% if u.user_id == i.patient_id %}
+      <td>
+        {{ u.surname }} {{ u.user_name }} {{ u.middle_name }}
+      </td>
+      {% endif %}
+      {% endfor %}
+      <td>
+        {{ i.creation_date }}
+      </td>
+      <td>
+        {{ i.history_text }}
+      </td>
+      {% if i.link_to_xray != None %}
+      <td>
+        <a href="/uploads/{{i.link_to_xray}}" target="_blank">
+          <button type="button" class="btn btn-info">Фото</button>
+        </a>
+      </td>
+      {% else %}
+      <td>
+        Фото не создано
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="container">
+  Страница доступна только для зарегистрированных пользователей. <br>
+  Необходимо зарегистрироваться или войти.
+  <meta http-equiv="refresh" content="3;URL=/login" />
+</div>
+{% endif %}
+{% endblock %}

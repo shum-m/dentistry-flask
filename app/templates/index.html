@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+  <div class="jumbotron">
+    <h1>Уважаемые пациенты</h1>
+    <p>Наша клиника предлагает широкий спектр стоматологических услуг. Если вы хотите, чтобы ваши зубы  не доставляли хлопот ни вам, ни вашим детям, просто запишитесь на прием!</p>
+    <p><a class="btn btn-success btn-lg " href="/new_appointment" role="button">Записаться</a></p>
+  </div>
+    <h1>Наши сотрудники</h1>
+<div class="row">
+  {% for i in doctors%}
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="{{ url_for('static',filename='static/dentist.jpg') }}" alt="{{ url_for('static',filename='static/dentist.jpg') }}">
+      <div class="caption">
+        {% for u in users %}
+        {% if u.user_id == i.user_id %}
+        <h3> {{ u.surname }} {{ u.user_name }} {{ u.middle_name }} </h3>
+        {% endif %}
+        {% endfor %}
+        {% for r in roles%}
+        {% if r.role_id == i.role_id %}
+        <p> {{r.role_text}} </p>
+        {% endif %}
+        {% endfor %}
+        {% if i.role_id != 1 %}
+        <p><a href="/new_appointment" class="btn btn-primary" role="button">Записаться</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor%}
+</div>
+</div>
+{% endblock %}

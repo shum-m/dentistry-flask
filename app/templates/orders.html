@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.is_anonymous == False and current_user.role_id >= 3 %}
+<div class="container">
+    <h1>{{title}}</h1>
+    <table class="table">
+    <thead>
+    <tr>
+        <th scope="col">ID счета</th>
+        <th scope="col">Создатель счета</th>
+        <th scope="col">Расходный материал</th>
+        <th scope="col">Количество</th>
+        <th scope="col">Дата создания счета</th>
+    </tr>
+    <tbody>
+    {% for i in orders_list %}
+    <tr>
+    <td>
+        {{i.order_id}}
+    </td>
+    {% for j in users %}
+    {% if j.user_id == i.doc_id %}
+    <td>
+        {{ j.surname }} {{ j.user_name }} {{ j.middle_name }}
+    </td>
+    {% endif %}
+    {% endfor %}
+
+    {% for j in materials %}
+    {% if j.material_id == i.material_id %}
+    <td>
+        {{j.material_text}}
+    </td>
+    {% endif %}
+    {% endfor %}
+
+    <td> {{i.amount}}</td>
+    <td> {{i.creation_date }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+{% else %}
+<div class="container">
+    Страница доступна только для зарегистрированных пользователей. <br>
+    Необходимо зарегистрироваться или войти.
+    <meta http-equiv="refresh" content="3;URL=/login" />
+</div>
+{% endif %}
+{% endblock %}

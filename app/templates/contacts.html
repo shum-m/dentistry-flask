@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .map-responsive{
+    overflow:hidden;
+    padding-bottom:56.25%;
+    position:relative;
+    height:0;
+}
+.map-responsive iframe{
+    left:0;
+    top:0;
+    height:100%;
+    width:100%;
+    position:absolute;
+}
+</style>
+<div class="container">
+    <h1>
+        Контактная информация
+    </h1>
+    <p class="lead">
+        г. Киров, ул Карла Либкнехта, 69 <br>
+        89012345678 <br>
+        kirov_dentistry@gmail.com <br>
+        Пн-Пт {{mfb}}:00-{{mfe}}:00, Сб {{sb}}:00-{{se}}:00
+    </p>
+</div>
+<div class="map-responsive">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1649.7281969711496!2d49.6676948897516!3d58.603475974220096!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x43fcf5ccef124655%3A0xa3ab97ee461c1722!2z0KLQtdCw0YLRgNCw0LvRjNC90LDRjyDQv9C70L7RidCw0LTRjA!5e0!3m2!1sru!2sru!4v1659620451848!5m2!1sru!2sru" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
+{% endblock %}

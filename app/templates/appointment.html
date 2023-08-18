@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    {% if current_user.is_anonymous == False and current_user.role_id <= 2 %}
+    <h1>Существующие записи</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Наименование услуги</th>
+            <th scope="col">Дата приема</th>
+            <th scope="col">Пациент</th>
+            <th scope="col">Запись создал</th>
+            <th scope="col">Дата создания записи</th>
+            <th scope="col">Лечащий врач</th>
+            <th scope="col">Отмена записи</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in range(all_appointments| length) %}
+        <tr>
+            {% if (current_user.role_id == 2 and current_user.user_id == all_appointments[i].patient_id) or (current_user.role_id == 1)%}
+            {% for j in services %}
+            {% if j.service_id == all_appointments[i].service_id %}
+            <td>
+                {{j.service_text}}
+            </td>
+            {% endif %}
+            {% endfor %}
+            <td>
+                {{all_appointments[i].appointment_date}}
+            </td>
+            {% for k in users %}
+            {% if k.user_id == all_appointments[i].patient_id %}
+            <td>
+                {{ k.surname }} {{ k.user_name }} {{ k.middle_name }}
+            </td>
+            {% endif %}
+            {% endfor %}
+            {% for k in users %}
+            {% if k.user_id == all_appointments[i].creator_id %}
+            <td>
+                {{ k.surname }} {{ k.user_name }} {{ k.middle_name }}
+            </td>
+            {% endif %}
+            {% endfor %}
+            <td>
+                {{all_appointments[i].creation_date}}
+            </td>
+            {% for k in doctors %}
+            {% if k.user_id == all_appointments[i].doc_id %}
+            <td>
+                {{ k.surname }} {{ k.user_name }} {{ k.middle_name }}
+            </td>
+            {% endif %}
+            {% endfor %}
+            {% if dateNow < all_appointments[i].appointment_date %}
+            <form action="/delete_appointment/{{all_appointments[i].patient_id}}/{{all_appointments[i].appointment_date}}" method="post">
+                <td>
+                    {{ delete_form.submit(class="btn btn-danger") }}
+                </td>
+            </form>
+            {% else %}
+            <td>Отмена невозможна.</td>
+            {% endif %}
+        {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    Страница доступна только для зарегистрированных пользователей. <br>
+    Необходимо зарегистрироваться или войти.
+    <meta http-equiv="refresh" content="3;URL=/login" />
+    {% endif %}
+</div>
+<script>
+var lookup = JSON.parse('{{doctors_service_dict | tojson}}');
+$('#options').on('change', function() {
+   var selectValue = $(this).val();
+
+   $('#choices').empty();
+
+   for (i = 0; i < lookup[selectValue].length; i++) {
+      // Output choice in the target field
+      $('#choices').append("<option value='" + lookup[selectValue][i] + "'>" + lookup[selectValue][i] + "</option>");
+   }
+});
+</script>
+{% endblock %}

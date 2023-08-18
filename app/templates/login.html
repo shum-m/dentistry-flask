@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <h1>{{title}}</h1>
+    <form action="" method="post"  novalidate>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.tel_no.label }}
+            {{ form.tel_no(class_="form-control", placeholder="89000000000", size=32) }}<br>
+            {% for error in form.tel_no.errors %}
+            <span style="color: red;">Это поле обязательно для заполнения</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.password.label }}<br>
+            {{ form.password(class_="form-control", placeholder="Пароль", size=32) }}<br>
+            {% for error in form.password.errors %}
+            <span style="color: red;">Это поле обязательно для заполнения</span>
+            {% endfor %}
+        </div>
+        {% for message in get_flashed_messages() %}
+        <span style="color: red;">{{ message }}</span>
+        {% endfor %}
+        <p>{{ form.remember_me(lass="form-check-input") }} {{ form.remember_me.label }}</p>
+        <p>{{ form.submit(class="btn btn-success") }}</p>
+    </form>
+</div>
+{% endblock %}
