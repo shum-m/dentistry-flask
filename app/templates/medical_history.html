@@ -53,7 +53,7 @@
       {% endif %}
       {% endfor %}
       <td>
-        {{ i.creation_date }}
+        {{ i.creation_date.strftime('%d.%m.%Y %H:%M') }}
       </td>
       <td>
         {{ i.history_text }}

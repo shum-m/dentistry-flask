@@ -28,7 +28,7 @@
             {% endif %}
             {% endfor %}
             <td>
-                {{all_appointments[i].appointment_date}}
+                {{all_appointments[i].appointment_date.strftime('%d.%m.%Y %H:%M')}}
             </td>
             {% for k in users %}
             {% if k.user_id == all_appointments[i].patient_id %}
@@ -45,7 +45,7 @@
             {% endif %}
             {% endfor %}
             <td>
-                {{all_appointments[i].creation_date}}
+                {{all_appointments[i].creation_date.strftime('%d.%m.%Y %H:%M')}}
             </td>
             {% for k in doctors %}
             {% if k.user_id == all_appointments[i].doc_id %}
@@ -55,11 +55,12 @@
             {% endif %}
             {% endfor %}
             {% if dateNow < all_appointments[i].appointment_date %}
-            <form action="/delete_appointment/{{all_appointments[i].patient_id}}/{{all_appointments[i].appointment_date}}" method="post">
-                <td>
+            <td>
+				<form action="/delete_appointment/{{all_appointments[i].patient_id}}/{{all_appointments[i].appointment_date}}" method="post">
                     {{ delete_form.submit(class="btn btn-danger") }}
-                </td>
-            </form>
+				</form>
+            </td>
+            
             {% else %}
             <td>Отмена невозможна.</td>
             {% endif %}

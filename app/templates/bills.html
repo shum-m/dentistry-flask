@@ -38,7 +38,7 @@
       {% for a in appointments %}
       {% if a.appointment_id == i.appointment_id %}
       <td>
-        {{a.appointment_date}} -
+        {{a.appointment_date.strftime('%d.%m.%Y %H:%M')}} -
         {% for j in services %}
           {% if j.service_id == a.service_id %}
             {{j.service_text}} -
@@ -64,7 +64,7 @@
       {% endfor %}
 
       <td>
-        {{i.bill_date}}
+        {{i.bill_date.strftime('%d.%m.%Y %H:%M')}}
       </td>
     </tr>
     {% endfor %}

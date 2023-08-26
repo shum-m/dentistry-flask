@@ -342,7 +342,7 @@ def bills():
             if i.service_id == s.service_id:
                 service += s.service_text
                 break
-        info = str(i.appointment_date) + " " + service + " " + patient
+        info = str(i.appointment_date.strftime('%d.%m.%Y %H:%M')) + " " + service + " " + patient
         tmp = (i.appointment_id, info)
         appointments_list.append(tmp)
     form.select_appointments.choices = appointments_list

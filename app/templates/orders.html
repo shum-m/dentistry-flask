@@ -36,7 +36,7 @@
     {% endfor %}
 
     <td> {{i.amount}}</td>
-    <td> {{i.creation_date }}</td>
+    <td> {{i.creation_date.strftime('%d.%m.%Y %H:%M')}}</td>
     </tr>
     {% endfor %}
     </tbody>

@@ -8,13 +8,15 @@ from app.models import User, Material, Service, Appointment, Bill
 from wtforms import validators
 import datetime
 
+FIELD_REQUIRED = "Это поле обязательно для заполнения"
+
 
 class LoginForm(FlaskForm):
     """
     Форма входа.
     """
-    tel_no = StringField('Номер телефона', [validators.DataRequired(), validators.Length(min=11, max=11)])
-    password = PasswordField('Пароль', [validators.DataRequired(), validators.Length(min=5, max=50)])
+    tel_no = StringField('Номер телефона', [validators.DataRequired(FIELD_REQUIRED), validators.Length(min=11, max=11)])
+    password = PasswordField('Пароль', [validators.DataRequired(FIELD_REQUIRED), validators.Length(min=5, max=50)])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
 
@@ -23,16 +25,17 @@ class RegistrationForm(FlaskForm):
     """
     Форма регистрации.
     """
-    surname = StringField('Фамилия', [validators.DataRequired(), validators.Length(min=1, max=50)])
-    user_name = StringField('Имя', [validators.DataRequired(), validators.Length(min=1, max=50)])
-    middle_name = StringField('Отчество', [validators.DataRequired(), validators.Length(max=50)])
-    birth_date = DateField('Дата рождения', format='%Y-%m-%d')
-    password = PasswordField('Пароль', [validators.DataRequired(), validators.Length(min=5, max=50)])
+    surname = StringField('Фамилия', [validators.DataRequired(FIELD_REQUIRED), validators.Length(min=1, max=50)])
+    user_name = StringField('Имя', [validators.DataRequired(FIELD_REQUIRED), validators.Length(min=1, max=50)])
+    middle_name = StringField('Отчество', [validators.DataRequired(FIELD_REQUIRED), validators.Length(max=50)])
+    birth_date = DateField('Дата рождения', format='%Y-%m-%d', validators=[validators.DataRequired(FIELD_REQUIRED)])
+    password = PasswordField('Пароль', [validators.DataRequired(FIELD_REQUIRED), validators.Length(min=5, max=50)])
     password2 = PasswordField(
-        'Повторите пароль', [validators.DataRequired(), validators.EqualTo('password', message='''
+        'Повторите пароль', [validators.DataRequired(FIELD_REQUIRED),
+                             validators.EqualTo('password', message='''
         Пароли должны совпадать'''), validators.Length(min=5, max=50)])
-    tel_no = StringField('Номер телефона', [validators.DataRequired(), validators.Length(min=11, max=11)])
-    email = EmailField('Email', [validators.DataRequired(), validators.Email(), validators.Length(max=50)])
+    tel_no = StringField('Номер телефона', [validators.DataRequired(FIELD_REQUIRED), validators.Length(min=11, max=11)])
+    email = EmailField('Email', [validators.DataRequired(FIELD_REQUIRED), validators.Email(), validators.Length(max=50)])
     submit = SubmitField('Зарегистрироваться')
 
     def validate_birth_date(self, birth_date):
@@ -41,7 +44,7 @@ class RegistrationForm(FlaskForm):
         :param birth_date: Дата рождения для валидации.
         :exception ValidationError:
         """
-        if birth_date.data >= datetime.date.today():
+        if str(birth_date).count("") != 0 or birth_date.data >= datetime.date.today():
             raise ValidationError('Неверная дата рождения')
 
     def validate_tel_no(self, tel_no):
@@ -78,7 +81,7 @@ class CostAccounting(FlaskForm):
         tmp = (i.material_id, i.material_text)
         materials_list.append(tmp)
     select_material = SelectField('Расходный материал', choices=materials_list)
-    amount = IntegerField('Количество', [validators.DataRequired()])
+    amount = IntegerField('Количество', [validators.DataRequired(FIELD_REQUIRED)])
     submit = SubmitField('Создать запись')
 
     def validate_amount(self, amount):
@@ -100,7 +103,7 @@ class MedicalHistoryForm(FlaskForm):
         users_list.append(tmp)
 
     select_patient = SelectField('Пациент', choices=users_list)
-    history_text = TextAreaField('Диагноз/запись', [validators.DataRequired(),
+    history_text = TextAreaField('Диагноз/запись', [validators.DataRequired(FIELD_REQUIRED),
                                                     validators.Length(min=1, message='Поле не должно быть пустым')])
     link_to_xray = FileField('Рентген зуба/фото', name='file')
     submit = SubmitField('Создать запись')
@@ -125,7 +128,7 @@ class CreateAppointment(FlaskForm):
     select_service = SelectField('Услуга', validate_choice=False, choices=services_list)
     select_doctors = SelectField('Лечащий врач', validate_choice=False, choices=[])
     select_patient = SelectField('Пациент', validate_choice=False, choices=users_list)
-    appointment_date = DateField('Дата записи', [validators.DataRequired()])
+    appointment_date = DateField('Дата записи', [validators.DataRequired(FIELD_REQUIRED)])
     select_time = SelectField('Время', validate_choice=False, choices=[])
     submit = SubmitField('Создать запись')
 
