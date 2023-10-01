@@ -18,8 +18,9 @@
         </thead>
         <tbody>
         {% for i in range(all_appointments| length) %}
+		{% if (current_user.role_id == 2 and current_user.user_id == all_appointments[i].patient_id) or (current_user.role_id == 1)%}
         <tr>
-            {% if (current_user.role_id == 2 and current_user.user_id == all_appointments[i].patient_id) or (current_user.role_id == 1)%}
+            
             {% for j in services %}
             {% if j.service_id == all_appointments[i].service_id %}
             <td>
@@ -64,8 +65,9 @@
             {% else %}
             <td>Отмена невозможна.</td>
             {% endif %}
-        {% endif %}
+        
         </tr>
+		{% endif %}
         {% endfor %}
         </tbody>
     </table>
@@ -75,17 +77,5 @@
     <meta http-equiv="refresh" content="3;URL=/login" />
     {% endif %}
 </div>
-<script>
-var lookup = JSON.parse('{{doctors_service_dict | tojson}}');
-$('#options').on('change', function() {
-   var selectValue = $(this).val();
 
-   $('#choices').empty();
-
-   for (i = 0; i < lookup[selectValue].length; i++) {
-      // Output choice in the target field
-      $('#choices').append("<option value='" + lookup[selectValue][i] + "'>" + lookup[selectValue][i] + "</option>");
-   }
-});
-</script>
 {% endblock %}
