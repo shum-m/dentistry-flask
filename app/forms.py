@@ -28,7 +28,7 @@ class RegistrationForm(FlaskForm):
     surname = StringField('Фамилия', [validators.DataRequired(FIELD_REQUIRED), validators.Length(min=1, max=50)])
     user_name = StringField('Имя', [validators.DataRequired(FIELD_REQUIRED), validators.Length(min=1, max=50)])
     middle_name = StringField('Отчество', [validators.DataRequired(FIELD_REQUIRED), validators.Length(max=50)])
-    birth_date = DateField('Дата рождения', format='%Y-%m-%d', validators=[validators.DataRequired(FIELD_REQUIRED)])
+    birth_date = DateField('Дата рождения', format='%Y-%m-%d')
     password = PasswordField('Пароль', [validators.DataRequired(FIELD_REQUIRED), validators.Length(min=5, max=50)])
     password2 = PasswordField(
         'Повторите пароль', [validators.DataRequired(FIELD_REQUIRED),
@@ -44,7 +44,10 @@ class RegistrationForm(FlaskForm):
         :param birth_date: Дата рождения для валидации.
         :exception ValidationError:
         """
-        if str(birth_date).count("") != 0 or birth_date.data >= datetime.date.today():
+        try:
+            if birth_date.data >= datetime.date.today():
+                raise ValidationError('Неверная дата рождения')
+        except Exception:
             raise ValidationError('Неверная дата рождения')
 
     def validate_tel_no(self, tel_no):
